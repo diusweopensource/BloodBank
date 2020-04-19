@@ -23,7 +23,12 @@ def addDonor(request):
         batch = request.POST.get('batch')
         address = request.POST.get('address')
 
-        bloodDonor = BloodDonor(
+        if BloodDonor.objects.filter(name = name, blood_group = blood, batch= batch).exists():
+            message = 'Donor already exists!'
+            messages.info(request, message)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            bloodDonor = BloodDonor(
             name = name,
             blood_group = blood,
             phone = phone,
@@ -31,8 +36,12 @@ def addDonor(request):
             address = address,
             status = True,
             created_date = datetime.now()
-        )
-        bloodDonor.save()
-        message = 'Donor uploaded, need admin approval'
-        messages.success(request, message)
+            )
+            bloodDonor.save()
+            message = 'Donor uploaded, need admin approval'
+            messages.success(request, message)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        message = 'Donor upload problem!!'
+        messages.warning(request, message)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
