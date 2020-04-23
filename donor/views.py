@@ -23,7 +23,7 @@ def addDonor(request):
         batch = request.POST.get('batch')
         address = request.POST.get('address')
 
-        if BloodDonor.objects.filter(name = name, blood_group = blood, batch= batch).exists():
+        if BloodDonor.objects.filter(name = name, batch= batch).exists():
             message = 'Donor already exists!'
             messages.info(request, message)
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
