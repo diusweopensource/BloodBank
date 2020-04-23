@@ -17,9 +17,16 @@ from django.contrib import admin
 from django.urls import path
 from donor import views
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('addDonor', views.addDonor, name='addDonor'),
+    path('adminUser', views.adminUser, name='adminUser'),
+    path('adminUser2', views.adminUser2, name='adminUser2'),
+    path('addDonor2', views.addDonor2, name='addDonor2'),
+    path('loginCheck', views.loginCheck, name='loginCheck'),
+    path('loginpage', views.loginpage, name='loginpage'),
+    path('delete/<int:id>', views.delete, name='delete'),
+    path('approve/<int:id>', views.update, name='update'),
+    path('DonorRequest', views.adminUser2, name='DonorRequest'),
 ]
