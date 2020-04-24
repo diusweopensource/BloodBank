@@ -4,8 +4,8 @@ from django.db import models
 
 class BloodDonor(models.Model):
     name = models.CharField(max_length=50)
-    blood_group = models.CharField(max_length=20)
-    batch = models.CharField(max_length=20)
+    blood_group = models.CharField(max_length=10)
+    batch = models.IntegerField()
     phone = models.CharField(max_length=20)
     address = models.CharField(max_length=100)
     status = models.BooleanField()

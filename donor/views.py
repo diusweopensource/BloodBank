@@ -7,53 +7,17 @@ from datetime import datetime
 from django.contrib.auth import authenticate,logout
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
+
+
 # Create your views here.
 
-@login_required(login_url='loginCheck')
+
 def home(request):
     allDonor = BloodDonor.objects.filter(status = True)
     context = {
         'allDonor': allDonor
     }
     return render(request, 'index.html', context)
-
-def loginCheck(request):
-    if request.user.is_authenticated:
-        return render(request, 'admin.html')
-    else:
-        return render(request, 'index.html')
-
-
-@login_required(login_url='loginCheck')
-def adminUser2(request):
-    allDonor = BloodDonor.objects.filter(status=False)
-    context = {
-        'allDonor': allDonor
-    }
-    return render(request, 'DonorReq.html', context)
-def adminUser(request):
-    allDonor = BloodDonor.objects.filter(status=True)
-
-    return render(request, 'adminUser.html',{'allDonor':allDonor})
-
-def loginpage(request):
-    if request.method == 'POST':
-        username=request.POST.get('username')
-        password=request.POST.get('password')
-        if username and password:
-            user = authenticate(username=username, password=password)
-
-            if user is not None:
-                auth_login(request, user)
-                user.save()
-                return redirect('adminUser')
-            else:
-                messages.info(request, 'Username & Password is incorrect')
-                return redirect('home')
-
-def logutUser(request):
-    logout(request)
-    return  redirect('home')
 
 
 
@@ -90,7 +54,84 @@ def addDonor(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-def addDonor2(request):
+
+
+def adminLogin(request):
+    if request.method == 'POST':
+        username=request.POST.get('username')
+        password=request.POST.get('password')
+        if username and password:
+            user = authenticate(username=username, password=password)
+
+            if user is not None:
+                auth_login(request, user)
+                user.save()
+                return redirect('adminApproveDonorPage')
+            else:
+                message = 'username & password is not correct!'
+                messages.warning(request, message)
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            message = 'username & password is invalid'
+            messages.warning(request, message)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        message = 'Login Action cannot perform' 
+        messages.warning(request, message)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+
+
+def loginCheck(request):
+    if request.user.is_authenticated:
+        return render(request, 'AdminUser.html')
+    else:
+        return render(request, 'index.html')
+
+
+
+
+
+@login_required(login_url='loginCheck')
+def adminApproveDonorPage(request):
+    allDonor = BloodDonor.objects.filter(status=False)
+    totalApprovedDonor = BloodDonor.objects.filter(status = True).count()
+    totalUnapprovedDonor = BloodDonor.objects.filter(status = False).count()
+    context = {
+        'allDonor': allDonor,
+        'totalApprovedDonor': totalApprovedDonor,
+        'totalUnapprovedDonor': totalUnapprovedDonor
+    }
+    return render(request, 'AdminDonorRequestList.html', context)
+
+
+
+@login_required(login_url='loginCheck')
+def adminFetchAllValidDonorPage(request):
+    allDonor = BloodDonor.objects.filter(status=True)
+    totalApprovedDonor = BloodDonor.objects.filter(status = True).count()
+    totalUnapprovedDonor = BloodDonor.objects.filter(status = False).count()
+    context = {
+        'allDonor': allDonor,
+        'totalApprovedDonor': totalApprovedDonor,
+        'totalUnapprovedDonor': totalUnapprovedDonor
+    }
+    return render(request, 'AdminAllDonorFetchPage.html',context)
+
+
+
+
+
+def logutUser(request):
+    logout(request)
+    return  redirect('home')
+
+
+
+
+@login_required(login_url='loginCheck')
+def adminAddDonor(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         blood = request.POST.get('blood')
@@ -122,15 +163,32 @@ def addDonor2(request):
         messages.warning(request, message)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-def delete(request,id):
-    instance= BloodDonor.objects.get(id=id)
-    instance.delete()
-    return redirect('adminUser')
 
-def update(request, id):
-    UpDonor = BloodDonor.objects.get(id=id)
-    UpDonor.status =True
-    UpDonor.save()
-    message = 'Donor Request Update'
-    messages.success(request, message)
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+@login_required(login_url='loginCheck')
+def adminDeleteDonor(request,id):
+    try:
+        instance= BloodDonor.objects.get(id=id)
+        instance.delete()
+        message = 'donor deleted successfully!'
+        messages.success(request, message)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except:
+        message = 'donor delete problem!'
+        messages.warning(request, message)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+
+@login_required(login_url='loginCheck')
+def adminApproveDonor(request, id):
+    try:
+        UpDonor = BloodDonor.objects.get(id=id)
+        UpDonor.status =True
+        UpDonor.save()
+        message = 'Donor approved successfully'
+        messages.success(request, message)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except:
+        message = 'donor approve problem!'
+        messages.warning(request, message)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

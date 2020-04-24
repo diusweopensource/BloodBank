@@ -38,7 +38,7 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'adminUser'%}" data-target="#myModal1" data-toggle="modal">admin</a>
+            <a class="nav-link"  data-target="#myModal1" data-toggle="modal">admin</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#"></a>
@@ -136,7 +136,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Blood</label>
                                     <div class="col-sm-9">
-                                        <select class="form-control" name="blood">
+                                        <select class="form-control" name="blood" required="required">
                                           <option selected disabled>Select</option>
                                           <option value="a+">A+</option>
                                           <option value="a-">A-</option>
@@ -167,8 +167,8 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Batch</label>
                                     <div class="col-sm-9">
-                                        <input type="text" name="batch"
-                                               class="form-control " placeholder="Batch"/>
+                                        <input type="number" name="batch" min="1" max="50"
+                                               class="form-control " placeholder="Batch" required/>
                                     </div>
                                 </div>
                             </div>
@@ -179,7 +179,7 @@
                                     <label class="col-sm-3 col-form-label">Address</label>
                                     <div class="col-sm-9">
                                         <input type="text" name="address"
-                                               class="form-control" placeholder="Address"/>
+                                               class="form-control" placeholder="Address" required/>
                                     </div>
                                 </div>
                             </div>
@@ -218,7 +218,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form  method="post" action="{% url 'loginpage' %}">
+                    <form  method="post" action="{% url 'adminLogin' %}">
                     {% csrf_token %}
                      <div class="form-sample">
 
