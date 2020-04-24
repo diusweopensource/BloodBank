@@ -37,13 +37,13 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'home' %}"> Logout</a>
+            <a class="nav-link" href="{% url 'logutUser' %}"> Logout</a>
           </li>
            <li class="nav-item">
-            <a class="nav-link" href="{% url 'DonorRequest' %}"> Donor Request</a>
+            <a class="nav-link" href="{% url 'adminApproveDonorPage' %}"> Donor Request</a>
           </li>
             <li class="nav-item">
-            <a class="nav-link" href="{% url 'adminUser' %}"> Donor List</a>
+            <a class="nav-link" href="{% url 'adminFetchAllValidDonorPage' %}"> Donor List</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#"></a>
@@ -53,12 +53,21 @@
     </div>
   </nav>
 
+  
   <header class="masthead text-center text-white">
-     <button class="btn btn-success admin">
     <div class="masthead-content">
       <div class="container">
         <h1 class="masthead-heading mb-0">DIU SWE Blood Bank</h1>
         <h2 class="masthead-subheading mb-0">a project by #diusweopensource</h2>
+        <div class="row mt-5" >
+          <div class="col-md-6">
+            <h3>Approved - {{totalApprovedDonor}}</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>Unapproved - {{totalUnapprovedDonor}}</h3>
+          <div>
+        </div>
       </div>
     </div>
   </header>
@@ -100,7 +109,7 @@
                       <td>{{donor.status }}</td>
                       <td>{{donor.created_date}}</td>
                      <!-- <td><a href="/approve/{{donor.id}}">Approve</a> </td>-->
-                      <td><a href="/delete/{{donor.id}}">Delete</a> </td>
+                      <td><a href="{% url 'adminDeleteDonor' donor.id %}">Delete</a> </td>
                   </tr>
                 {% endfor %}
         </table>
@@ -128,7 +137,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form  method="post" action="{% url 'addDonor2'%}">
+                    <form  method="post" action="{% url 'adminAddDonor'%}">
                     {% csrf_token %}
                      <div class="form-sample">
 
